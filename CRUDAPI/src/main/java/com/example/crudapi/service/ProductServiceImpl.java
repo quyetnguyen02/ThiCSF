@@ -30,14 +30,15 @@ public class ProductServiceImpl implements ProductService{
     }
 
     public Product sellProduct(Integer id, Integer quantity) {
-        Optional<Product> userE = productRepository.findById(id);
-        if(userE.isPresent()) {
-            return userE.get();
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null){
+            return null;
         }
-//
-//        if(quantity > 0){
-//
-//        }
-        return null;
+        int result = product.getQuantity() - quantity;
+        if (result < 0){
+            return null;
+        }
+        product.setQuantity(result);
+        return productRepository.save(product);
     }
 }
